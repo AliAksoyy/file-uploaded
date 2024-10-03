@@ -2,6 +2,10 @@ const express = require("express");
 const path = require("path");
 const fileUpload = require("express-fileupload");
 
+const filesPayloadExists = require("./middleware/filesPayloadExists");
+const fileExtLimiter = require("./middleware/fileExtLimiter");
+const fileSizeLimiter = require("./middleware/fileSizeLimiter");
+
 const PORT = 3500;
 
 const app = express();
@@ -13,6 +17,9 @@ app.get("/", (req, res) => {
 app.post(
   "/upload",
   fileUpload({ createParentPath: true }),
+  filesPayloadExists,
+  fileExtLimiter([".png", ".jpg", ".jpeg"]),
+  fileSizeLimiter,
 
   (req, res) => {
     const files = req.files;
